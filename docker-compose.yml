@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  web:
+    image: php:8.1-apache
+    container_name: devops_mvc_php
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      # REEMPLAZA ESTOS DATOS CON LOS QUE TE DA AWS RDS:
+      - DB_HOST=tu-instancia.c123456789.us-east-1.rds.amazonaws.com
+      - DB_USER=administra
+      - DB_PASSWORD=tu_password_seguro_de_rds
+      - DB_NAME=devops_central
+      # CREDENCIALES PARA TU BUCKET DE AWS S3:
+      - AWS_ACCESS_KEY_ID=tu_aws_access_key
+      - AWS_SECRET_ACCESS_KEY=tu_aws_secret_key
+      - AWS_REGION=us-east-1
+      - AWS_BUCKET_NAME=tu-bucket-de-scripts-devops
+    command: >
+      sh -c "apt-get update && apt-get install -y libssl-dev openssl
+      && echo 'configurando permisos y SSL...'
+      && echo '<Directory /var/www/html>' > /etc/apache2/conf-available/z-override.conf
+      && echo '    Options Indexes FollowSymLinks' >> /etc/apache2/conf-available/z-override.conf
+      && echo '    AllowOverride All' >> /etc/apache2/conf-available/z-override.conf
+      && echo '    Require all granted' >> /etc/apache2/conf-available/z-override.conf
+      && echo '</Directory>' >> /etc/apache2/conf-available/z-override.conf
+      && a2enconf z-override
+      && docker-php-ext-install pdo pdo_mysql mysqli
+      && apache2-foreground"

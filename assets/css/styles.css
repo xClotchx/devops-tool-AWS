@@ -1,0 +1,668 @@
+:root {
+    --bg: #0b0c10;
+    --bg-gradient: radial-gradient(circle at top right, #1f2833, #0b0c10);
+    --card-bg: rgba(31, 40, 51, 0.45);
+    --input-bg: #151a22;
+    --text-main: #c5c6c7;
+    --text-white: #ffffff;
+    --accent: #66fcf1; /* Azul cian neón eléctrico */
+    --accent-green: #45f3ff;
+    --border: rgba(102, 252, 241, 0.15);
+    --border-hover: rgba(102, 252, 241, 0.5);
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: var(--bg);
+    background-image: var(--bg-gradient);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    padding: 50px 20px;
+}
+
+.container { max-width: 950px; margin: 0 auto; }
+
+/* Header futurista */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    padding: 25px 30px;
+    border-radius: 16px;
+    margin-bottom: 40px;
+    box-shadow: var(--shadow);
+}
+
+.main-header h1 {
+    color: var(--text-white);
+    font-size: 2rem;
+    letter-spacing: -1px;
+}
+
+.main-header p { color: var(--accent); font-size: 0.9rem; font-family: monospace; }
+
+/* Botón Neón */
+.btn-primary {
+    background: transparent;
+    color: var(--accent) !important;
+    border: 1px solid var(--accent);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    font-family: monospace;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(102, 252, 241, 0.1);
+}
+
+.btn-primary:hover {
+    background: var(--accent);
+    color: #0b0c10 !important;
+    box-shadow: 0 0 20px rgba(102, 252, 241, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Tarjetas de Scripts de alto nivel */
+.script-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow);
+    transition: border 0.3s ease, transform 0.3s ease;
+}
+
+.script-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-3px);
+}
+
+.badge {
+    background: rgba(102, 252, 241, 0.1);
+    color: var(--accent);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-family: monospace;
+    border: 1px solid var(--border);
+}
+
+.script-card h2 { color: var(--text-white); margin: 10px 0; font-size: 1.5rem; }
+
+/* Caja de Terminal Avanzada */
+.terminal-box {
+    background: #05070a;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    position: relative;
+}
+
+.terminal-box pre code {
+    font-family: 'Fira Code', 'SF Mono', Monaco, monospace;
+    color: #45f3ff;
+    font-size: 0.95rem;
+}
+
+/* Botón flotante de copiar dentro de la terminal */
+.btn-copy {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-main);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-family: monospace;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-copy:hover { background: rgba(255,255,255,0.15); color: var(--text-white); }
+
+/* Formulario */
+.script-form { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 40px; box-shadow: var(--shadow); }
+.form-group { margin-bottom: 25px; }
+.form-group label { color: var(--text-white); font-family: monospace; margin-bottom: 10px; display: block; }
+input, textarea, select {
+    width: 100%; padding: 14px; background: var(--input-bg); border: 1px solid var(--border);
+    color: var(--text-white); border-radius: 8px; font-size: 1rem;
+}
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 10px rgba(102, 252, 241, 0.2); }
+
+.btn-secondary {
+    background: transparent;
+    color: var(--accent) !important;
+    border: 1px solid var(--accent); /* Borde neón completo */
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    font-family: monospace;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(102, 252, 241, 0.1);
+}
+
+.btn-secondary:hover {
+    background: var(--accent);       /* Se rellena por completo igual que el otro */
+    color: #0b0c10 !important;       /* El texto cambia a negro para contrastar */
+    box-shadow: 0 0 20px rgba(102, 252, 241, 0.4); /* Brillo neón idéntico */
+    transform: translateY(-2px);
+}
+select {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border);
+    color: var(--text-white);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: monospace; /* Tipografía estilo terminal */
+    
+    /* Esto es CLAVE: elimina el estilo feo por defecto de Mac/Safari/Chrome */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    
+    /* Añadimos nuestra propia flecha minimalista usando SVG integrado */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2366fcf1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    padding-right: 40px; /* Espacio para que el texto no pise la flecha */
+    
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Efecto de enfoque cuando haces clic en él */
+select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(102, 252, 241, 0.2);
+}
+
+/* Estilo para las opciones desplegadas (dentro del menú) */
+select option {
+    background-color: #151a22; /* Fondo oscuro coincidente */
+    color: var(--text-white);
+    padding: 10px;
+}
+.btn-danger {
+    background: transparent;
+    color: #ff4a4a !important;
+    border: 1px solid #ff4a4a;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    font-family: monospace;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(255, 74, 74, 0.1);
+}
+
+.btn-danger:hover {
+    background: #ff4a4a;
+    color: #0b0c10 !important;
+    box-shadow: 0 0 20px rgba(255, 74, 74, 0.4);
+    transform: translateY(-2px);
+}
+/* --- ESTILO BRUTAL PARA EL BOTÓN DE SUBIR FOTO --- */
+
+/* Contenedor o input general */
+input[type="file"] {
+    background: #0b0c10 !important; /* Fondo ultra oscuro */
+    border: 1px dashed #66fcf1 !important; /* Borde punteado neón */
+    padding: 12px 15px !important;
+    color: #c5c6c7 !important;
+    font-family: monospace;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* El botón interno que dice "Seleccionar archivo" (La magia) */
+input[type="file"]::file-selector-button {
+    background: transparent;
+    border: 1px solid #66fcf1;
+    color: #66fcf1;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-weight: bold;
+    cursor: pointer;
+    margin-right: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 8px rgba(102, 252, 241, 0.2);
+}
+
+/* Efecto Hover para el botón interno */
+input[type="file"]::file-selector-button:hover {
+    background: #66fcf1;
+    color: #0b0c10;
+    box-shadow: 0 0 15px rgba(102, 252, 241, 0.6);
+}
+
+/* Efecto cuando pasas el mouse por encima de todo el campo */
+input[type="file"]:hover {
+    border-color: #45f3ff !important;
+    box-shadow: inset 0 0 10px rgba(102, 252, 241, 0.1);
+}
+/* --- BOTÓN DE COPIAR ESTILO TERMINAL --- */
+.btn-copy {
+    background: rgba(11, 12, 16, 0.6) !important; /* Fondo oscuro translúcido */
+    color: #66fcf1 !important; /* Texto cian neón */
+    border: 1px solid #66fcf1 !important; /* Borde neón delgado */
+    padding: 6px 14px !important;
+    border-radius: 6px !important;
+    font-family: 'Courier New', Courier, monospace; /* Fuente de código */
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 8px rgba(102, 252, 241, 0.1);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Efecto al pasar el mouse por encima (Hover) */
+.btn-copy:hover {
+    background: #66fcf1 !important; /* Se llena de color neón */
+    color: #0b0c10 !important; /* El texto se vuelve oscuro */
+    box-shadow: 0 0 15px rgba(102, 252, 241, 0.5); /* Brillo exterior */
+    transform: translateY(-1px); /* Pequeño salto hacia arriba */
+}
+
+/* Efecto cuando lo presionas (Click) */
+.btn-copy:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 5px rgba(102, 252, 241, 0.3);
+}
+/* --- ESTILOS PARA EL MÓDULO DE IMÁGENES EN EDICIÓN --- */
+
+.current-image-box {
+    background: rgba(255, 75, 75, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 75, 75, 0.2);
+    margin-top: 15px;
+}
+
+.danger-label {
+    color: #ff4b4b;
+    font-weight: bold;
+}
+
+.preview-thumb {
+    max-width: 200px;
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin: 10px 0;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: #fff;
+    margin-bottom: 0;
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
+}
+
+.warning-text {
+    font-family: monospace;
+    color: #ff4b4b;
+}
+
+.margin-top-file {
+    margin-top: 20px;
+}
+
+.file-input-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.file-input-wrapper input[type="file"] {
+    flex-grow: 1;
+}
+
+.submit-btn {
+    margin-top: 20px;
+}
+
+/* Clase para ocultar el botón de quitar al inicio */
+.hidden-element {
+    display: none !important;
+}
+/* --- ESTILOS DE INICIO DE SESIÓN --- */
+
+
+
+.login-btn {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+/* Alerta de error en terminal */
+.error-alert {
+    background: rgba(255, 75, 75, 0.1);
+    border: 1px solid #ff4b4b;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    color: #ff4b4b;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+.container.login-container {
+    max-width: 400px !important; /* Tamaño pequeño y estético */
+    margin: 100px auto 0 auto !important; /* Lo baja y lo centra horizontalmente */
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Envuelve y centra verticalmente en pantallas grandes */
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 75vh;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* LA CAJA CENTRALIZADA (Encapsulado pequeño) */
+.login-box {
+    background: #11141a; /* Fondo oscuro de terminal */
+    border: 1px solid rgba(102, 252, 241, 0.2); /* Borde cian neón sutil */
+    border-radius: 12px;
+    padding: 30px;
+    width: 100%;
+    max-width: 400px; /* Evita que pase de este ancho */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(102, 252, 241, 0.05);
+    box-sizing: border-box;
+}
+
+/* --- CABECERA COMPACTA --- */
+.login-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(102, 252, 241, 0.15);
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.login-title {
+    font-size: 1.8rem; /* Un poco más pequeño para que cuadre con la caja */
+    color: #ffffff;
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.login-subtitle {
+    color: #66fcf1;
+    font-family: monospace;
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.3;
+}
+/* --- BOTONES SECUNDARIOS DEL ACCESO --- */
+
+.login-btn-secondary {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.register-link-container {
+    margin-top: 15px;
+    width: 100%;
+}
+
+
+/* ==========================================================================
+   SISTEMA DE ANIMACIONES ENTRE VENTANAS (FADE-IN & SLIDE)
+   ========================================================================== */
+
+/* 1. Definición de la animación de entrada suave */
+@keyframes windowFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px); /* Viene ligeramente desde abajo */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);    /* Se asienta en su posición original */
+    }
+}
+
+/* 2. Aplicar la animación a las cajas de acceso (Login y Registro) */
+.login-box {
+    animation: windowFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 3. Aplicar la animación al contenedor del Panel Principal, Crear y Editar */
+/* Nota: Asegúrate de que tus archivos index.php, create.php y edit.php 
+   tengan sus formularios o contenidos envueltos en la clase .container */
+.container {
+    animation: windowFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 4. Efecto de transición interna para los botones al pasar el cursor (Hover) */
+.btn-primary, .btn-danger, .btn-secondary, .btn-copy {
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:active, .btn-danger:active, .btn-secondary:active {
+    transform: scale(0.98); /* Sutil efecto de hundimiento al dar clic */
+}
+/* ==========================================================================
+   ESTILOS DE LA LANDING PAGE PÚBLICA (HOME)
+   ========================================================================== */
+
+.landing-wrapper-custom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.hero-section {
+    text-align: center;
+    padding: 60px 20px;
+    background: radial-gradient(circle at top, rgba(102, 252, 241, 0.1) 0%, transparent 70%);
+    border-bottom: 1px solid rgba(102, 252, 241, 0.1);
+}
+
+.logo-terminal-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: rgba(102, 252, 241, 0.1);
+    border: 2px solid #66fcf1;
+    border-radius: 16px;
+    font-size: 2rem;
+    color: #66fcf1;
+    font-family: monospace;
+    font-weight: bold;
+    margin-bottom: 20px;
+    box-shadow: 0 0 20px rgba(102, 252, 241, 0.2);
+}
+
+.hero-title {
+    font-size: 3rem;
+    color: #ffffff;
+    margin: 0 0 15px 0;
+    font-weight: 800;
+}
+
+.hero-subtitle {
+    color: #66fcf1;
+    font-family: monospace;
+    font-size: 1.1rem;
+    margin: 0 0 30px 0;
+}
+
+.nav-buttons-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-cta {
+    text-decoration: none;
+    padding: 12px 30px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 1rem;
+}
+
+.info-grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin: 50px 0;
+}
+
+.info-card-box {
+    background: #11141a;
+    border: 1px solid rgba(102, 252, 241, 0.15);
+    border-radius: 12px;
+    padding: 30px;
+}
+
+.info-card-box h3 {
+    color: #66fcf1;
+    margin-top: 0;
+    font-family: monospace;
+    font-size: 1.3rem;
+}
+
+.info-card-box p {
+    color: #c5c6c7;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.showcase-container {
+    background: #0b0c10;
+    border: 1px solid rgba(102, 252, 241, 0.2);
+    border-radius: 12px;
+    padding: 40px;
+    margin: 40px 0;
+}
+
+.showcase-header-text {
+    margin-bottom: 25px;
+}
+
+.showcase-header-text h2 {
+    color: #ffffff;
+    margin: 0 0 10px 0;
+}
+
+.showcase-header-text p {
+    color: #c5c6c7;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Simulación de Terminal */
+.mock-terminal-window {
+    background: #05070a;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+}
+
+.terminal-window-bar {
+    background: #11141a;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.window-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.dot-close { background: #ff5f56; }
+.dot-minimize { background: #ffbd2e; }
+.dot-maximize { background: #27c93f; }
+
+.terminal-window-title {
+    color: #c5c6c7;
+    font-family: monospace;
+    font-size: 0.8rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.mock-terminal-window pre {
+    margin: 0;
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.mock-terminal-window code {
+    font-family: 'Courier New', Courier, monospace;
+    color: #a9ffb4;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Colores de sintaxis para la maqueta de código */
+.code-comment { color: #7fdbca; }
+.code-string { color: #ecc48d; }
+.code-keyword { color: #66fcf1; }
+.code-error { color: #ff5f56; }
