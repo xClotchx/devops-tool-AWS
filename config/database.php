@@ -1,16 +1,18 @@
 <?php
     class Database {
-        // CAMBIO: Usamos localhost o 127.0.0.1 para referirse a la DB instalada en la misma instancia EC2
-        private $host = "127.0.0.1"; 
-        
-        // Mantén el nombre de tu base de datos tal cual la configuraste en tu servidor MySQL local
-        private $db_name = "devops_tool_db"; 
-        
-        // CAMBIO: Asegúrate de usar el usuario y contraseña que definiste en tu servidor MySQL de la EC2
-        private $username = "administra"; 
-        private $password = "12345";
-        
+        private $host; 
+        private $db_name; 
+        private $username; 
+        private $password;
         public $conn;
+
+        public function __construct() {
+            // Docker pasará estas variables dinámicamente; si no existen, usa los defaults de la derecha
+            $this->host     = getenv('DB_HOST')     ?: "127.0.0.1";
+            $this->db_name  = getenv('DB_NAME')     ?: "devops_tool_db";
+            $this->username = getenv('DB_USER')     ?: "administra";
+            $this->password = getenv('DB_PASSWORD') ?: "12345";
+        }
 
         public function getConnection() {
             $this->conn = null;
@@ -26,7 +28,6 @@
                     ]
                 );
             } catch(PDOException $exception) {
-                // Es recomendable loguear esto en lugar de imprimirlo directamente en producción
                 error_log("Error de conexión: " . $exception->getMessage());
                 echo "Error de conexión a la base de datos.";
             }
