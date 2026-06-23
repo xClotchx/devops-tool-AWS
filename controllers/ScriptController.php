@@ -1,5 +1,5 @@
 <?php
-require_once "models/Script.php";
+require_once "models/script.php";
 require_once "config/database.php"; 
 
 // Cargamos el SDK de AWS desde el autoloader de Composer
