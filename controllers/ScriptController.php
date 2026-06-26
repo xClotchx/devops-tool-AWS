@@ -20,14 +20,17 @@ class ScriptController {
 
         // Inicializamos el cliente de AWS S3 con las variables de entorno configuradas en Docker
         $this->bucket = $_ENV['AWS_BUCKET_NAME'] ?? getenv('AWS_BUCKET_NAME');
-     $this->s3 = new S3Client([
-    'version' => 'latest',
-    'region'  => 'us-east-1', // O la región de tu EC2
-    // No necesitas pasar 'credentials' si la instancia EC2 tiene un IAM Role con permisos S3
-]);
+        $this->s3 = new S3Client([
+            'version' => 'latest',
+            'region'  => $_ENV['AWS_REGION'] ?? getenv('AWS_REGION') ?: 'us-east-1',
+            'credentials' => [
+                'key'    => $_ENV['AWS_ACCESS_KEY_ID'] ?? getenv('AWS_ACCESS_KEY_ID'),
+                'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'] ?? getenv('AWS_SECRET_ACCESS_KEY'),
+            ],
+        ]);
     }
 
-    // LISTAR CON FILTRO
+    // LISTAR CON FILTRO Y ENLACES PRIVADOS TEMPORALES
     public function index() {
         $this->scriptModel->user_id = $_SESSION['user_id'];
         
@@ -35,10 +38,32 @@ class ScriptController {
         $stmt = $this->scriptModel->readAll($category_filter);
         $scripts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
+        // Modificamos el arreglo de scripts para inyectar la URL Firmada Temporal de S3
+        foreach ($scripts as &$script) {
+            if (!empty($script['image_path'])) {
+                try {
+                    // Generamos un comando GetObject para la clave interna guardada
+                    $cmd = $this->s3->getCommand('GetObject', [
+                        'Bucket' => $this->bucket,
+                        'Key'    => $script['image_path']
+                    ]);
+                    // La URL expira automáticamente en 10 minutos
+                    $request = $this->s3->createPresignedRequest($cmd, '+10 minutes');
+                    $script['image_url_firmada'] = (string)$request->getUri();
+                } catch (Exception $e) {
+                    error_log("Error generando URL firmada: " . $e->getMessage());
+                    $script['image_url_firmada'] = null;
+                }
+            } else {
+                $script['image_url_firmada'] = null;
+            }
+        }
+        unset($script); // Rompemos la referencia del puntero foreach
+        
         require_once "views/dashboard.php";
     }
 
-    // PROCESAR Y GUARDAR DIRECTAMENTE EN AWS S3
+    // PROCESAR Y GUARDAR EN S3 DE FORMA TOTALMENTE PRIVADA
     public function store() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $this->scriptModel->user_id = $_SESSION['user_id'];
@@ -49,29 +74,28 @@ class ScriptController {
             $this->scriptModel->instructions = $_POST['instructions'];
             $this->scriptModel->category_id = $_POST['category_id'];
             
-            $image_url = null;
+            $s3_key = null;
             if (isset($_FILES['script_image']) && $_FILES['script_image']['error'] == 0) {
                 $file_tmp = $_FILES['script_image']['tmp_name'];
                 $file_extension = pathinfo($_FILES["script_image"]["name"], PATHINFO_EXTENSION);
                 $image_name = time() . "_" . uniqid() . "." . $file_extension;
+                $s3_key = 'uploads/' . $image_name;
 
                 try {
-                    // Subida directa al Bucket en AWS S3
-                    $result = $this->s3->putObject([
+                    // Subida directa al Bucket de forma privada (Sin ACL pública)
+                    $this->s3->putObject([
                         'Bucket' => $this->bucket,
-                        'Key'    => 'uploads/' . $image_name,
-                        'SourceFile' => $file_tmp,
-                        'ACL'    => 'public-read' // Para que las imágenes sean visibles en la web
+                        'Key'    => $s3_key,
+                        'SourceFile' => $file_tmp
                     ]);
-                    
-                    // Guardamos la URL pública completa en AWS RDS
-                    $image_url = $result['ObjectURL'];
                 } catch (S3Exception $e) {
                     error_log("Error al subir a S3 en store: " . $e->getMessage());
+                    $s3_key = null;
                 }
             }
 
-            $this->scriptModel->image_path = $image_url;
+            // Guardamos únicamente la KEY relativa (ej: uploads/archivo.png) en la DB
+            $this->scriptModel->image_path = $s3_key;
 
             if ($this->scriptModel->create()) {
                 header("Location: index.php?action=index&success=created");
@@ -87,13 +111,25 @@ class ScriptController {
         $this->scriptModel->user_id = $_SESSION['user_id'];
         $script = $this->scriptModel->readOne($id);
         if ($script) {
+            // Generamos también la URL firmada para que se vea la foto actual en la vista de edición
+            if (!empty($script['image_path'])) {
+                $cmd = $this->s3->getCommand('GetObject', [
+                    'Bucket' => $this->bucket,
+                    'Key'    => $script['image_path']
+                ]);
+                $request = $this->s3->createPresignedRequest($cmd, '+10 minutes');
+                $script['image_url_firmada'] = (string)$request->getUri();
+            } else {
+                $script['image_url_firmada'] = null;
+            }
+
             require_once "views/edit.php";
         } else {
             header("Location: index.php?action=index");
         }
     }
 
-    // PROCESAR ACTUALIZACIÓN CON MANEJO DE AWS S3
+    // PROCESAR ACTUALIZACIÓN Y SOBREESCRITURA DE ASSETS
     public function updateScript($id) {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $this->scriptModel->user_id = $_SESSION['user_id'];
@@ -119,18 +155,18 @@ class ScriptController {
                 $file_tmp = $_FILES['script_image']['tmp_name'];
                 $file_extension = pathinfo($_FILES["script_image"]["name"], PATHINFO_EXTENSION);
                 $image_name = time() . "_" . uniqid() . "." . $file_extension;
+                $s3_key = 'uploads/' . $image_name;
 
                 try {
-                    $result = $this->s3->putObject([
+                    $this->s3->putObject([
                         'Bucket' => $this->bucket,
-                        'Key'    => 'uploads/' . $image_name,
-                        'SourceFile' => $file_tmp,
-                        'ACL'    => 'public-read'
+                        'Key'    => $s3_key,
+                        'SourceFile' => $file_tmp
                     ]);
                     
-                    $this->scriptModel->image_path = $result['ObjectURL'];
+                    $this->scriptModel->image_path = $s3_key;
                     
-                    // Si ya tenía una imagen previa, la borramos de S3 para no acumular basura
+                    // Si ya tenía una imagen previa, la borramos de S3 para mantener limpio el bucket
                     if (!empty($currentScript['image_path'])) {
                         $this->deleteFromS3($currentScript['image_path']);
                     }
@@ -153,7 +189,7 @@ class ScriptController {
         }
     }
 
-    // BORRAR SCRIPT Y SU ASSET EN S3
+    // BORRAR SCRIPT Y LIMPIAR S3
     public function deleteScript($id) {
         $this->scriptModel->user_id = $_SESSION['user_id'];
         $currentScript = $this->scriptModel->readOne($id);
@@ -169,16 +205,12 @@ class ScriptController {
         exit();
     }
 
-    // FUNCIÓN AUXILIAR PRIVADA PARA LIMPIAR OBJETOS EN S3
-    private function deleteFromS3($full_url) {
-        // Extraemos la ruta interna (Key) quitando el dominio de Amazon (ej: uploads/archivo.jpg)
-        $key = parse_url($full_url, PHP_URL_PATH);
-        $key = ltrim($key, '/'); 
-        
+    // FUNCIÓN AUXILIAR PRIVADA CORREGIDA PARA MANEJAR LA RUTA DIRECTA (KEY)
+    private function deleteFromS3($s3_key) {
         try {
             $this->s3->deleteObject([
                 'Bucket' => $this->bucket,
-                'Key'    => $key
+                'Key'    => $s3_key
             ]);
         } catch (S3Exception $e) {
             error_log("Error al eliminar objeto de S3: " . $e->getMessage());

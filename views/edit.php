@@ -14,7 +14,7 @@
                 <h1>Editar Script</h1>
                 <p>Corrigiendo el registro seleccionado</p>
             </div>
-            <a href="index.php" class="btn-secondary">← Cancelar</a>
+            <a href="dashboard.php" class="btn-secondary">← Cancelar</a>
         </header>
 
         <form action="index.php?action=update&id=<?php echo $script['id']; ?>" method="POST" enctype="multipart/form-data" class="script-form">
