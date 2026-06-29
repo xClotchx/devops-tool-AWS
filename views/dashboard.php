@@ -83,14 +83,14 @@
                             </div>
                         <?php endif; ?>
 
-                        <?php if (!empty($script['image_url_firmada'])): ?>
-                            <div class="script-screenshot" style="margin-top: 20px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
-                                <span style="display: block; background: #05070a; padding: 8px 15px; font-family: monospace; font-size: 0.8rem; color: var(--accent); border-bottom: 1px solid rgba(102, 252, 241, 0.15);">
-                                    🔒 Captura resguardada en AWS S3:
-                                </span>
-                                <img src="<?= $script['image_url_firmada'] ?>" alt="Captura del código" style="width: 100%; display: block; height: auto;">
-                            </div>
-                        <?php endif; ?>
+                        <?php if (!empty($script['image_path'])): ?>
+    <div class="script-screenshot" style="margin-top: 20px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
+        <span style="display: block; background: #05070a; padding: 8px 15px; font-family: monospace; font-size: 0.8rem; color: var(--accent); border-bottom: 1px solid rgba(102, 252, 241, 0.15);">
+            🌍 Captura en AWS S3:
+        </span>
+        <img src="https://devopsuploads.s3.amazonaws.com/<?= htmlspecialchars($script['image_path']) ?>" alt="Captura del código" style="width: 100%; display: block; height: auto;">
+    </div>
+<?php endif; ?>
                     </article>
                 <?php endforeach; ?>
             <?php else: ?>
