@@ -40,7 +40,7 @@ class ScriptController {
         
         // Modificamos el arreglo de scripts para inyectar la URL Firmada Temporal de S3
         foreach ($scripts as &$script) {
-            if (!empty($script['image_path'])) {
+            if (!empty($script['image_path']) && strpos($script['image_path'], 'uploads/') === 0) {
                 try {
                     // Generamos un comando GetObject para la clave interna guardada
                     $cmd = $this->s3->getCommand('GetObject', [
@@ -63,7 +63,7 @@ class ScriptController {
         require_once "views/dashboard.php";
     }
 
-    // PROCESAR Y GUARDAR EN S3 DE FORMA TOTALMENTE PRIVADA
+    // PROCESAR Y GUARDAR EN S3 DE FORMA TOTALMENTE PRIVADA (CON CAZADOR DE ERRORES)
     public function store() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $this->scriptModel->user_id = $_SESSION['user_id'];
@@ -82,15 +82,24 @@ class ScriptController {
                 $s3_key = 'uploads/' . $image_name;
 
                 try {
-                    // Subida directa al Bucket de forma privada (Sin ACL pública)
+                    // Subida directa al Bucket de forma privada
                     $this->s3->putObject([
                         'Bucket' => $this->bucket,
                         'Key'    => $s3_key,
                         'SourceFile' => $file_tmp
                     ]);
                 } catch (S3Exception $e) {
-                    error_log("Error al subir a S3 en store: " . $e->getMessage());
-                    $s3_key = null;
+                    // DETENER LA EJECUCIÓN PARA VER EL ERROR EN EL NAVEGADOR
+                    echo "<h2>🚨 Error del SDK de AWS S3 al intentar subir el archivo:</h2>";
+                    echo "<pre>" . htmlspecialchars($e->getMessage()) . "</pre>";
+                    echo "<h3>Variables actuales leídas por PHP:</h3>";
+                    echo "Bucket: " . htmlspecialchars($this->bucket) . "<br>";
+                    echo "Región: " . htmlspecialchars($this->s3->getRegion()) . "<br>";
+                    die();
+                } catch (Exception $e) {
+                    echo "<h2>🚨 Error General del Sistema:</h2>";
+                    echo "<pre>" . htmlspecialchars($e->getMessage()) . "</pre>";
+                    die();
                 }
             }
 
@@ -112,7 +121,7 @@ class ScriptController {
         $script = $this->scriptModel->readOne($id);
         if ($script) {
             // Generamos también la URL firmada para que se vea la foto actual en la vista de edición
-            if (!empty($script['image_path'])) {
+            if (!empty($script['image_path']) && strpos($script['image_path'], 'uploads/') === 0) {
                 $cmd = $this->s3->getCommand('GetObject', [
                     'Bucket' => $this->bucket,
                     'Key'    => $script['image_path']
