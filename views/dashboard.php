@@ -85,7 +85,7 @@
 
                         <?php if (!empty($script['instructions'])): ?>
                             <div class="instructions-box" style="margin-bottom: 15px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 6px; border-left: 3px solid var(--accent);">
-                                <strong style="color: #fff; font-size: 0.9rem; display: block; margin-bottom: 4px;">📖 Cómo usarlo:</strong>
+                                <strong style="color: #fff; font-size: 0.9rem; display: block; margin-bottom: 4px;">Cómo usarlo:</strong>
                                 <p style="color: #c9d1d9; margin: 0; font-size: 0.9rem;"><?= htmlspecialchars($script['instructions']) ?></p>
                             </div>
                         <?php endif; ?>
