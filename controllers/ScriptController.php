@@ -40,12 +40,15 @@ class ScriptController {
         
         // Modificamos el arreglo de scripts para inyectar la URL Firmada Temporal de S3
         foreach ($scripts as &$script) {
-            if (!empty($script['image_path']) && strpos($script['image_path'], 'uploads/') === 0) {
+            if (!empty($script['image_path'])) {
                 try {
+                    // Si por algún motivo la DB guardó solo el nombre plano, le anteponemos el prefijo correcto de S3
+                    $key = (strpos($script['image_path'], 'uploads/') === 0) ? $script['image_path'] : 'uploads/' . $script['image_path'];
+
                     // Generamos un comando GetObject para la clave interna guardada
                     $cmd = $this->s3->getCommand('GetObject', [
                         'Bucket' => $this->bucket,
-                        'Key'    => $script['image_path']
+                        'Key'    => $key
                     ]);
                     // La URL expira automáticamente en 10 minutos
                     $request = $this->s3->createPresignedRequest($cmd, '+10 minutes');
@@ -121,13 +124,19 @@ class ScriptController {
         $script = $this->scriptModel->readOne($id);
         if ($script) {
             // Generamos también la URL firmada para que se vea la foto actual en la vista de edición
-            if (!empty($script['image_path']) && strpos($script['image_path'], 'uploads/') === 0) {
-                $cmd = $this->s3->getCommand('GetObject', [
-                    'Bucket' => $this->bucket,
-                    'Key'    => $script['image_path']
-                ]);
-                $request = $this->s3->createPresignedRequest($cmd, '+10 minutes');
-                $script['image_url_firmada'] = (string)$request->getUri();
+            if (!empty($script['image_path'])) {
+                try {
+                    $key = (strpos($script['image_path'], 'uploads/') === 0) ? $script['image_path'] : 'uploads/' . $script['image_path'];
+                    
+                    $cmd = $this->s3->getCommand('GetObject', [
+                        'Bucket' => $this->bucket,
+                        'Key'    => $key
+                    ]);
+                    $request = $this->s3->createPresignedRequest($cmd, '+10 minutes');
+                    $script['image_url_firmada'] = (string)$request->getUri();
+                } catch (Exception $e) {
+                    $script['image_url_firmada'] = null;
+                }
             } else {
                 $script['image_url_firmada'] = null;
             }
@@ -217,9 +226,11 @@ class ScriptController {
     // FUNCIÓN AUXILIAR PRIVADA CORREGIDA PARA MANEJAR LA RUTA DIRECTA (KEY)
     private function deleteFromS3($s3_key) {
         try {
+            // Aseguramos que la eliminación lleve el prefijo correcto si falta
+            $key = (strpos($s3_key, 'uploads/') === 0) ? $s3_key : 'uploads/' . $s3_key;
             $this->s3->deleteObject([
                 'Bucket' => $this->bucket,
-                'Key'    => $s3_key
+                'Key'    => $key
             ]);
         } catch (S3Exception $e) {
             error_log("Error al eliminar objeto de S3: " . $e->getMessage());
