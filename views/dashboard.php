@@ -88,7 +88,7 @@
         <span style="display: block; background: #05070a; padding: 8px 15px; font-family: monospace; font-size: 0.8rem; color: var(--accent); border-bottom: 1px solid rgba(102, 252, 241, 0.15);">
             🌍 Captura en AWS S3:
         </span>
-        <img src="https://devops-tool-db.s3.amazonaws.com/<?= htmlspecialchars($script['image_path']) ?>" alt="Captura del código" style="width: 100%; display: block; height: auto;">
+        <img src="https://devopsuploads.s3.amazonaws.com/<?= htmlspecialchars($script['image_path']) ?>" alt="Captura del código" style="width: 100%; display: block; height: auto;">
     </div>
 <?php endif; ?>
                     </article>
