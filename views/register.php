@@ -40,12 +40,12 @@
 
             <div class="form-group">
                 <label for="password">Contraseña de Terminal</label>
-                <input type="password" name="password" id="password" placeholder="••••••••" required>
+                <input type="password" name="password" id="password" placeholder="••••••••" autocomplete="new-password" required>
             </div>
 
             <div class="form-group">
                 <label for="confirm_password">Confirmar Contraseña</label>
-                <input type="password" name="confirm_password" id="confirm_password" placeholder="••••••••" required>
+                <input type="password" name="confirm_password" id="confirm_password" placeholder="••••••••" autocomplete="new-password" required>
             </div>
 
             <button type="submit" class="btn-primary login-btn">Registrar y Crear Cuenta</button>
