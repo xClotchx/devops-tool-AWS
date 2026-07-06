@@ -38,15 +38,34 @@
                 <input type="email" name="email" id="email" placeholder="operador@dominio.com" required autocomplete="off">
             </div>
 
-            <div class="form-group" style="margin-bottom: 20px;">
-                <label style="display: block; font-family: monospace; color: var(--accent); margin-bottom: 8px;">Contraseña de Terminal</label>
-                <input type="text" name="password"  style="background: #111622; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px; width: 100%; font-family: monospace; font-size: 1.1rem; -webkit-text-security: disc; text-security: disc;">
-            </div>
+           <!-- CAMPO 1: CONTRASEÑA DE TERMINAL -->
+<div class="form-group" style="margin-bottom: 20px;">
+    <!-- Truco 1: Usamos pseudo-elementos CSS para que la palabra 'Contraseña' no exista en el texto plano del HTML -->
+    <label style="display: block; font-family: monospace; color: var(--accent); margin-bottom: 8px;" class="label-term-pass"></label>
+    <input type="text" 
+           name="term_key" 
+           id="term_key"
+           required 
+           autocomplete="new-password"
+           style="background: #111622; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px; width: 100%; font-family: monospace; font-size: 1.1rem; -webkit-text-security: disc;">
+</div>
 
-            <div class="form-group" style="margin-bottom: 20px;">
-                <label style="display: block; font-family: monospace; color: var(--accent); margin-bottom: 8px;">Confirmar Contraseña</label>
-                <input type="text" name="confirm_password" required style="background: #111622; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px; width: 100%; font-family: monospace; font-size: 1.1rem; -webkit-text-security: disc; text-security: disc;">
-            </div>
+<!-- CAMPO 2: CONFIRMAR CONTRASEÑA -->
+<div class="form-group" style="margin-bottom: 20px;">
+    <label style="display: block; font-family: monospace; color: var(--accent); margin-bottom: 8px;" class="label-confirm-pass"></label>
+    <input type="text" 
+           name="confirm_term_key" 
+           id="confirm_term_key"
+           required 
+           autocomplete="new-password"
+           style="background: #111622; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px; width: 100%; font-family: monospace; font-size: 1.1rem; -webkit-text-security: disc;">
+</div>
+
+<!-- Estilos extra para inyectar el texto visualmente sin que Safari lo lea como 'Contraseña' -->
+<style>
+    .label-term-pass::before { content: "Clave de Acceso Terminal"; }
+    .label-confirm-pass::before { content: "Repetir Clave de Acceso"; }
+</style>
 
             <!-- Corrección de clases de los botones -->
             <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Registrar y Crear Cuenta</button>
