@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../models/Script.php';
+require_once __DIR__ . '/../models/script.php';
 
 require_once "config/database.php"; 
 
@@ -189,4 +189,4 @@ class ScriptController {
         }
     }
 }
-?>
+?> 
