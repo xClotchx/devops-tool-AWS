@@ -1,5 +1,7 @@
 <?php
-require_once __DIR__ . '/../models/script.php';
+// Esto extrae la ruta raíz limpiamente y busca el archivo con la S mayúscula correcta
+require_once dirname(__DIR__) . '/models/script.php';
+
 
 require_once "config/database.php"; 
 
