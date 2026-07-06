@@ -23,7 +23,17 @@
             <?php endif; ?>
 
             <form action="index.php?action=login_process" method="POST" class="script-form">
-                <a href="index.php?action=home" class="btn-primary login-btn">← Inicio</a>
+                <div style="margin-bottom: 20px; display: block;">
+    <a href="index.php?action=home" style="
+        font-family: monospace;
+        font-size: 0.9rem;
+        color: #888888;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    " onmouseover="this.style.color='#bbbbbb';" 
+       onmouseout="this.style.color='#888888';"
+    >← Inicio</a>
+</div>
                 <div class="form-group">
                     <label for="username">Usuario de Terminal</label>
                     <input type="text" name="username" id="username" placeholder="Ej: admin" required autocomplete="off">
