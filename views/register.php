@@ -38,20 +38,21 @@
                 <input type="email" name="email" id="email" placeholder="operador@dominio.com" required autocomplete="off">
             </div>
 
-            <div class="form-group">
-                <label for="password">Contraseña de Terminal</label>
-                <input type="password" name="password" id="password" placeholder="••••••••" required>
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="display: block; font-family: monospace; color: var(--accent); margin-bottom: 8px;">Contraseña de Terminal</label>
+                <input type="text" name="password"  style="background: #111622; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px; width: 100%; font-family: monospace; font-size: 1.1rem; -webkit-text-security: disc; text-security: disc;">
             </div>
 
-            <div class="form-group">
-                <label for="confirm_password">Confirmar Contraseña</label>
-                <input type="password" name="confirm_password" id="confirm_password" placeholder="••••••••" required>
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="display: block; font-family: monospace; color: var(--accent); margin-bottom: 8px;">Confirmar Contraseña</label>
+                <input type="text" name="confirm_password" required style="background: #111622; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px; width: 100%; font-family: monospace; font-size: 1.1rem; -webkit-text-security: disc; text-security: disc;">
             </div>
 
-            <button type="submit" class="btn-primary login-btn">Registrar y Crear Cuenta</button>
+            <!-- Corrección de clases de los botones -->
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Registrar y Crear Cuenta</button>
             
-            <div class="margin-top-file">
-               <a href="index.php?action=login" class="btn-danger login-btn-secondary">← Volver al Login</a>
+            <div style="margin-top: 15px; text-align: center;">
+                <a href="index.php?action=login" class="btn-danger" style="display: block; width: 100%; text-decoration: none;">← Volver al Login</a>
             </div>
         </form>
     </div>
