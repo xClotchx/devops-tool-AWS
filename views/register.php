@@ -38,7 +38,7 @@
                 <input type="email" name="email" id="email" placeholder="operador@dominio.com" required autocomplete="off">
             </div>
 
-         -- CAMPO 1: CONTRASEÑA DE TERMINAL -->
+         <!-- CAMPO 1: CONTRASEÑA DE TERMINAL -->
 <div class="form-group" style="margin-bottom: 20px;">
     <label style="display: block; font-family: monospace; color: var(--accent); margin-bottom: 8px;">Contraseña de Terminal</label>
     <input type="text" 

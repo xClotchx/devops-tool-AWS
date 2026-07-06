@@ -23,6 +23,7 @@
             <?php endif; ?>
 
             <form action="index.php?action=login_process" method="POST" class="script-form">
+                <a href="index.php?action=home" ><-Inicio</a>
                 <div class="form-group">
                     <label for="username">Usuario de Terminal</label>
                     <input type="text" name="username" id="username" placeholder="Ej: admin" required autocomplete="off">
