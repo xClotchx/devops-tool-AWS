@@ -29,8 +29,9 @@ class AuthController {
    // PROCESAR EL REGISTRO CON AUTOLOGIN AUTOMÁTICO
     public function registerProcess() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $password = $_POST['password'];
-            $confirm_password = $_POST['confirm_password'];
+            // CORRECCIÓN PARA SAFARI: Leemos los nuevos nombres de input ocultos
+            $password = $_POST['term_key'] ?? '';
+            $confirm_password = $_POST['confirm_term_key'] ?? '';
 
             if ($password !== $confirm_password) {
                 header("Location: index.php?action=register&error=password_mismatch");
