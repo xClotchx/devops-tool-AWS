@@ -1,5 +1,5 @@
 <?php
-require_once "models/Script.php";
+require_once __DIR__ . '/../models/Script.php'; //  Esto funciona perfecto en local y producción
 require_once "config/database.php"; 
 
 // Cargamos el SDK de AWS desde el autoloader de Composer
