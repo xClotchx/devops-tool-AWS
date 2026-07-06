@@ -1,16 +1,24 @@
 <?php
     class Database {
-        private $host = "host.docker.internal";
-        private $db_name = "devops_tool_db";
-        private $username = "administra"; 
-        private $password = "12345";
+        private $host;
+        private $db_name;
+        private $username; 
+        private $password;
         public $conn;
+
+        public function __construct() {
+            // Intenta leer las variables de Docker, si no existen usa los datos locales por defecto
+            $this->host = getenv('DB_HOST') ?: "host.docker.internal";
+            $this->db_name = getenv('DB_NAME') ?: "devops_tool_db";
+            $this->username = getenv('DB_USER') ?: "administra";
+            $this->password = getenv('DB_PASSWORD') ?: "12345";
+        }
 
         public function getConnection() {
             $this->conn = null;
-            try{
+            try {
                 $this->conn = new PDO(
-                    "mysql:host=" . $this->host . ";dbname=" . $this->db_name. ";charset=utf8", 
+                    "mysql:host=" . $this->host . ";dbname=" . $this->db_name . ";charset=utf8", 
                     $this->username, 
                     $this->password,
                     [
