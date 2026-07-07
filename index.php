@@ -1,4 +1,10 @@
 <?php
+
+// Evita que PHP envíe datos al navegador antes de tiempo, guardando todo en caché temporal
+ob_start(); 
+
+session_start();
+// ... (el resto de tus requires y lógica de enrutamiento)
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
