@@ -1,8 +1,6 @@
 <?php
 // Esto extrae la ruta raíz limpiamente y busca el archivo con la S mayúscula correcta
 require_once dirname(__DIR__) . '/models/script.php';
-
-
 require_once "config/database.php"; 
 
 // Cargamos el SDK de AWS desde el autoloader de Composer
@@ -21,19 +19,24 @@ class ScriptController {
         $this->db = $database->getConnection();
         $this->scriptModel = new Script($this->db);
 
-        // Inicializamos el cliente de AWS S3 con las variables de entorno configuradas en Docker
-        $this->bucket = $_ENV['AWS_BUCKET_NAME'] ?? getenv('AWS_BUCKET_NAME');
+        // Inicializamos el cliente de AWS S3 de forma segura buscando variables de entorno
+        $this->bucket = $_ENV['AWS_BUCKET_NAME'] ?? getenv('AWS_BUCKET_NAME') ?: 'devopsuploads';
+        
+        $region = $_ENV['AWS_REGION'] ?? getenv('AWS_REGION') ?: 'us-east-1';
+        $key = $_ENV['AWS_ACCESS_KEY_ID'] ?? getenv('AWS_ACCESS_KEY_ID');
+        $secret = $_ENV['AWS_SECRET_ACCESS_KEY'] ?? getenv('AWS_SECRET_ACCESS_KEY');
+
         $this->s3 = new S3Client([
             'version' => 'latest',
-            'region'  => $_ENV['AWS_REGION'] ?? getenv('AWS_REGION'),
+            'region'  => $region,
             'credentials' => [
-                'key'    => $_ENV['AWS_ACCESS_KEY_ID'] ?? getenv('AWS_ACCESS_KEY_ID'),
-                'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'] ?? getenv('AWS_SECRET_ACCESS_KEY'),
+                'key'    => $key,
+                'secret' => $secret,
             ]
         ]);
     }
 
-    // LISTAR CON FILTRO
+    // LISTAR CON FILTRO EN EL DASHBOARD
     public function index() {
         $this->scriptModel->user_id = $_SESSION['user_id'];
         
@@ -67,10 +70,10 @@ class ScriptController {
                         'Bucket' => $this->bucket,
                         'Key'    => 'uploads/' . $image_name,
                         'SourceFile' => $file_tmp,
-                        'ACL'    => 'public-read' // Para que las imágenes sean visibles en la web
+                        'ACL'    => 'public-read' // Visibilidad web inmediata
                     ]);
                     
-                    // Guardamos la URL pública completa en AWS RDS
+                    // Guardamos la URL pública completa devuelta por AWS
                     $image_url = $result['ObjectURL'];
                 } catch (S3Exception $e) {
                     error_log("Error al subir a S3 en store: " . $e->getMessage());
@@ -136,13 +139,13 @@ class ScriptController {
                     
                     $this->scriptModel->image_path = $result['ObjectURL'];
                     
-                    // Si ya tenía una imagen previa, la borramos de S3 para no acumular basura
+                    // Borrado preventivo del archivo viejo en S3
                     if (!empty($currentScript['image_path'])) {
                         $this->deleteFromS3($currentScript['image_path']);
                     }
                 } catch (S3Exception $e) {
                     error_log("Error al actualizar en S3: " . $e->getMessage());
-                    $this->scriptModel->image_path = $currentScript['image_path']; // Mantiene la anterior si falla
+                    $this->scriptModel->image_path = $currentScript['image_path']; 
                 }
             } 
             // CASO C: No hubo cambios en la imagen
@@ -175,11 +178,18 @@ class ScriptController {
         exit();
     }
 
-    // FUNCIÓN AUXILIAR PRIVADA PARA LIMPIAR OBJETOS EN S3
+    // FUNCIÓN AUXILIAR PRIVADA PARA LIMPIAR OBJETOS EN S3 (CORREGIDA SIN OUTPUTS)
     private function deleteFromS3($full_url) {
-        // Extraemos la ruta interna (Key) quitando el dominio de Amazon (ej: uploads/archivo.jpg)
-        $key = parse_url($full_url, PHP_URL_PATH);
-        $key = ltrim($key, '/'); 
+        if (empty($full_url)) {
+            return;
+        }
+        
+        $path = parse_url($full_url, PHP_URL_PATH);
+        if ($path === false || empty($path)) {
+            return;
+        }
+        
+        $key = ltrim($path, '/'); 
         
         try {
             $this->s3->deleteObject([
@@ -191,4 +201,4 @@ class ScriptController {
         }
     }
 }
-?> 
+?>
