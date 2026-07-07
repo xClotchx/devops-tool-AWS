@@ -1,16 +1,20 @@
 <?php
-
-// Evita que PHP envíe datos al navegador antes de tiempo, guardando todo en caché temporal
+// 1. El búfer de salida siempre va en la línea 1
 ob_start(); 
 
-session_start();
-// ... (el resto de tus requires y lógica de enrutamiento)
+// 2. Reporte de errores
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// 3. Ajustes de la sesión (SIEMPRE antes de inicializarla)
 ini_set('session.save_path', '/tmp'); 
-session_start(); 
 
+// 4. Iniciamos la sesión de forma segura y una sola vez
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// 5. Carga de controladores
 require_once "controllers/ScriptController.php";
 require_once "controllers/AuthController.php";
 
@@ -20,7 +24,7 @@ $action = isset($_GET['action']) ? $_GET['action'] : 'home';
 $authController = new AuthController();
 $scriptController = new ScriptController();
 
-// 1. RUTAS PÚBLICAS (Cualquiera puede entrar, y 'home' es la bienvenida garantizada)
+// 1. RUTAS PÚBLICAS
 if ($action == 'home') {
     require_once "views/home.php";
     exit();
@@ -39,7 +43,6 @@ if ($action == 'home') {
 }
 
 // 2. FILTRO DE SEGURIDAD PARA RUTAS PRIVADAS
-// Si quieren ir a una acción privada (como index, edit, etc.) pero NO están logueados, al Login de cabeza.
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php?action=login");
     exit();
@@ -72,7 +75,6 @@ switch ($action) {
         $authController->logout();
         break;
     default:
-        // Si ponen una acción que no existe en la URL, al Home por seguridad
         header("Location: index.php?action=home");
         break;
 }
